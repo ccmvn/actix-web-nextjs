@@ -109,10 +109,10 @@ mod tests {
         assert!(svg.contains(r#"<svg xmlns="http://www.w3.org/2000/svg" fill="none""#));
     }
 
-    /// Test: Returns a dynamic page for specific paths
+    /// Test: Returns a dynamic numeric page
     #[cfg(feature = "wildcards")]
     #[actix_web::test]
-    async fn returns_dynamic_page() {
+    async fn test_returns_dynamic_numeric_page() {
         let app = test::init_service(test_app()).await;
 
         let req = test::TestRequest::default().uri("/1/items/1").to_request();
@@ -125,13 +125,13 @@ mod tests {
         assert!(html.contains("Item Page"));
     }
 
-    /// Test: Returns a dynamic wildcard page
+    /// Test: Returns a dynamic character page
     #[cfg(feature = "wildcards")]
     #[actix_web::test]
-    async fn returns_dynamic_wildcard_page() {
+    async fn test_returns_dynamic_character_page() {
         let app = test::init_service(test_app()).await;
 
-        let req = test::TestRequest::default().uri("/42/items/43").to_request();
+        let req = test::TestRequest::default().uri("/3b2b6d56-e85b-432d-b555-7113b810a3b7/items/1").to_request();
         let res = test::call_service(&app, req).await;
 
         assert_eq!(res.status(), StatusCode::OK);
