@@ -19,12 +19,18 @@ pub async fn serve_index(
     path_tree: &Arc<PathTree<String>>,
 ) -> Result<ServiceResponse, SpaError> {
     trace!("Serving default SPA page for path: {}", req.path());
-    let (req, _) = req.into_parts();
+    let (req, _payload) = req.into_parts();
 
-    #[allow(unused_mut)]
-    let mut file_path = match path_tree.find(req.path()) {
+    if req.uri().path() == "/" {
+        let file = NamedFile::open_async(index_file.as_ref()).await.map_err(SpaError::from)?;
+        let res = file.into_response(&req);
+
+        return Ok(ServiceResponse::new(req, res));
+    }
+
+    let mut file_path = match path_tree.find(req.uri().path()) {
         Some((path, _)) => path.to_string(),
-        None => req.path().to_string(),
+        None => req.uri().path().to_string(),
     };
 
     #[cfg(feature = "wildcards")]
@@ -66,11 +72,12 @@ pub fn find_and_parse_build_manifest(static_resources_location: &str) -> Result<
 /// Find the build manifest file based on a glob pattern
 fn find_build_manifest(static_resources_location: &str) -> Result<Option<PathBuf>, SpaError> {
     let pattern = format!("{}/_next/**/_buildManifest.js", static_resources_location);
+
     match glob(&pattern) {
         Ok(paths) => Ok(paths.filter_map(Result::ok).next()),
-        Err(err) => {
-            error!("Failed to read glob pattern: {}: {:?}", pattern, err);
-            Err(SpaError::GlobPatternError(err))
+        Err(e) => {
+            error!("Failed to read glob pattern: {}: {:?}", pattern, e);
+            Err(SpaError::GlobPatternError(e))
         }
     }
 }
@@ -119,7 +126,7 @@ fn convert_dynamic_path(path: &str) -> String {
 fn convert_to_wildcard_path(file_path: &str) -> Result<String, SpaError> {
     Ok(file_path
         .split('/')
-        .map(|segment| if segment.parse::<u32>().is_ok() { "*" } else { segment })
+        .map(|segment| if segment.chars().any(|c| c.is_digit(10)) { "*" } else { segment })
         .collect::<Vec<&str>>()
         .join("/"))
 }
