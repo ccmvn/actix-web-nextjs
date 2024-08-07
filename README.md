@@ -37,7 +37,7 @@ Add `actix-web-nextjs` to your dependencies:
 
 ```toml
 [dependencies]
-actix-web-nextjs = "0.2.3"
+actix-web-nextjs = "0.2.4"
 ```
 
 `actix-web-nextjs` exposes the following feature flags:
