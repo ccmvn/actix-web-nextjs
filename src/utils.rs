@@ -43,12 +43,7 @@ pub async fn serve_index(
 
     let file = match NamedFile::open_async(&file_path).await {
         Ok(f) => f,
-        Err(err) => {
-            error!(
-                "File not found: {}, error: {}. Serving index file.",
-                file_path.display(),
-                err
-            );
+        Err(_) => {
             NamedFile::open_async(index_file.as_ref()).await.map_err(SpaError::from)?
         }
     };

@@ -1,7 +1,7 @@
 [package]
 name = "actix-web-nextjs"
 description = "Actix Web service for hosting statically exported Next.js apps"
-version = "0.2.0"
+version = "0.2.1"
 edition = "2021"
 authors = ["ccmvn <info@ccmvn.co>"]
 
