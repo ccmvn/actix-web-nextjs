@@ -1,0 +1,10 @@
+# Dependencies
+/target
+
+# Misc
+.DS_Store
+*.pem
+Cargo.lock
+
+# IDEA
+.idea
