@@ -14,17 +14,17 @@ exclude = [
 ]
 
 [dependencies]
-actix-files = "0.6.6"
-actix-service = "2.0.2"
+actix-files = { version = "0.6.6", default-features = false }
+actix-service = { version = "2.0.2", default-features = false }
 actix-web = { version = "4.8.0", default-features = false, features = ["macros"] }
 glob = "0.3.1"
 path-tree = "0.8.1"
-regex = "1.10.6"
+regex = { version = "1.10.6", default-features = false, features = ["unicode-perl"] }
 once_cell = "1.19.0"
-tracing = "0.1.40"
+tracing = { version = "0.1.40", default-features = false, features = ["log"] }
 anyhow = "1.0.86"
 thiserror = "1.0.63"
-tokio = { version = "1.39.2", default-features = false, features = ["fs", "rt-multi-thread"] }
+tokio = { version = "1.39.2", default-features = false, features = ["fs"] }
 
 [features]
 default = ["wildcards"]
